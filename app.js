@@ -4,16 +4,17 @@ const endpoint = "https://first-test001-default-rtdb.firebaseio.com"
 
 window.addEventListener('load', initApp)
 
-function initApp() {
-    getPost();
+async function initApp() {
+    const posts = await getPosts();
+    displayPosts(posts);
 }
 
 
-getPost();
-async function getPost() {
+async function getPosts() {
     const response = await fetch(`${endpoint}/posts.json`);
     const data = await response.json();
-    return preparePostData(data);
+    const posts = preparePostData(data);
+    return posts;
 }
 
 function preparePostData(dataObject) {
@@ -24,4 +25,24 @@ function preparePostData(dataObject) {
         newArray.push(post)
     }
     return newArray;
+}
+
+function displayPosts(listOfPosts) {
+    for (const post of listOfPosts) {
+        displayPost(post);
+    }
+}
+
+function displayPost(postObject) {
+
+    const html = /*html*/ `
+    <article>
+    <h2>${postObject.title}</h2>
+    <img src="${postObject.image}"/>
+    <h4>INFO: ${postObject.body}</h4>
+    
+    </article>
+    `;
+
+    document.querySelector("#posts").insertAdjacentHTML("beforeend", html);
 }
